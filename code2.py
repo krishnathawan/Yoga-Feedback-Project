@@ -29,10 +29,10 @@ confidence_scores = []
 
 # Map the predicted class to its respective index in `model.classes_`
 for i in range(len(y_predict)):
-    predicted_label = y_predict[i]
-    class_index = np.where(model.classes_ == predicted_label)[0][0]  # Get index of the predicted class
-    confidence = probabilities[i][class_index]  # Confidence score for the predicted class
-    confidence_scores.append(confidence)
+    if y_predict[i] == y_test[i]:
+        class_index = np.where(model.classes_ == y_predict[i])[0][0]  # Get index of the predicted class
+        confidence = probabilities[i][class_index]  # Confidence score for the predicted class
+        confidence_scores.append(confidence)
 
 average_confidence = np.mean(confidence_scores)
 print('Average confidence score: {:.2f}%'.format(average_confidence * 100))
