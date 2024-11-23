@@ -171,7 +171,7 @@ while True:
         if visible_landmarks < total_landmarks * 0.9:  # Less than 90% of landmarks visible
             feedback = "Can't see complete body"
             cv2.putText(feedback_background, feedback, (11, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
-            cv2.putText(frame, "No pose", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 0, 255), 3, cv2.LINE_AA)
+            
         # we took threshold confidence as 65% 
         elif confidence > 0.65:
             cv2.putText(frame, f'{predicted_pose} ({confidence:.2f})', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 0, 0), 3, cv2.LINE_AA)
