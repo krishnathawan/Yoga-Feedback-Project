@@ -35,12 +35,29 @@ def calculate_angle(a, b, c):
     return angle
 
 labels_dict = {0: 'Tree', 1: 'Goddess', 2: 'Mountain',3: 'Chair Pose',4: 'Cobra Pose',5: 'Diamond Pose'}
+pose_images = {
+    'Tree': r"C:\Users\krish\tree_pose.jpeg",
+    'Goddess':r"C:\Users\krish\Goddess.jpg",
+    'Mountain': r"C:\Users\krish\mountain_pose.jpeg",
+    'Chair Pose': r"C:\Users\krish\chair_pose.jpg",
+    'Cobra Pose': r"C:\Users\krish\cobra_pose.jpeg",
+    'Diamond Pose': r"C:\Users\krish\diamond_pose.jpg"
+}
+
+# ask user to select a pose
+print("Select a yoga pose by entering the corresponding number:")
+for key, label in labels_dict.items():
+    print(f"{key}: {label}")
+
+selected_pose_index = int(input("Enter the number of the yoga pose: "))
+selected_pose_label = labels_dict[selected_pose_index]
+reference_image = cv2.imread(pose_images[selected_pose_label])
 
 while True:
     data_aux = []
     x_ = []
     y_ = []
-
+    feedback_background = np.zeros((500, 500, 3), dtype=np.uint8)
     ret, frame = cap.read()
     H, W, _ = frame.shape
 
@@ -148,9 +165,15 @@ while True:
         
 
         cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 0), 4)
-        
+        visible_landmarks = sum([1 for lm in landmarks if lm.visibility > 0.5])  # Visibility threshold = 0.5
+        total_landmarks = len(landmarks)
+
+        if visible_landmarks < total_landmarks * 0.9:  # Less than 90% of landmarks visible
+            feedback = "Can't see complete body"
+            cv2.putText(feedback_background, feedback, (11, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
+            cv2.putText(frame, "No pose", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 0, 255), 3, cv2.LINE_AA)
         # we took threshold confidence as 65% 
-        if confidence > 0.65:
+        elif confidence > 0.65:
             cv2.putText(frame, f'{predicted_pose} ({confidence:.2f})', (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 0, 0), 3, cv2.LINE_AA)
             predicted_ideal_angles = ideal_ranges.get(str(int(prediction[0])), None)
 
@@ -174,8 +197,18 @@ while True:
         else:
             cv2.putText(frame, "No pose", (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 0, 0), 3, cv2.LINE_AA)
 
-    cv2.imshow('frame', frame)
-    cv2.waitKey(1)
+    live_frame_resized = cv2.resize(frame, (500, 700))
+    reference_image_resized = cv2.resize(reference_image, (500, 700))
+    feedback_resized = cv2.resize(feedback_background, (500, 700))
+
+    # concatenation of frames 
+    composite_frame = cv2.hconcat([live_frame_resized,feedback_resized,reference_image_resized])
+
+    # showing the combined frame 
+    cv2.imshow('Yoga Pose Feedback', composite_frame)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
 
 cap.release()
 cv2.destroyAllWindows()
