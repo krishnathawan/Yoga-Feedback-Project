@@ -190,9 +190,9 @@ while True:
             
             if feedback:
                 for i, comment in enumerate(feedback):
-                    cv2.putText(frame, comment, (x1, y1 + 30 + i*30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2, cv2.LINE_AA)
+                    cv2.putText(feedback_background, comment, (11, 41 + i*30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
             else:
-                cv2.putText(frame, "Perfect Pose!", (x1, y1 + 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2, cv2.LINE_AA)
+                cv2.putText(feedback_background, "Perfect Pose!", (11, 41), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
 
         else:
             cv2.putText(frame, "No pose", (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 1.3, (0, 0, 0), 3, cv2.LINE_AA)
