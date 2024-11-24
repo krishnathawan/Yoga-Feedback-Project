@@ -168,7 +168,7 @@ while True:
         visible_landmarks = sum([1 for lm in landmarks if lm.visibility > 0.5])  # Visibility threshold = 0.5
         total_landmarks = len(landmarks)
 
-        if visible_landmarks < total_landmarks * 0.9:  # Less than 90% of landmarks visible
+        if visible_landmarks < total_landmarks * 0.8:  # Less than 80% of landmarks visible
             feedback = "Can't see complete body"
             cv2.putText(feedback_background, feedback, (11, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
             
